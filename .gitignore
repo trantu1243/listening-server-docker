@@ -1,0 +1,4 @@
+/.idea
+/logs/*.log
+.env
+/docker/db-data/*
