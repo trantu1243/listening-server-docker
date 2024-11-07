@@ -27,4 +27,12 @@ class SuspectListController extends Controller
             'name' => $name
         ]);
     }
+
+    public function destroy($id){
+        $suspect = Suspect::find($id);
+        $name = $suspect->name;
+        $suspect->delete();
+        toastr()->success("Xóa đối tượng {$name} thành công");
+        return back();
+    }
 }

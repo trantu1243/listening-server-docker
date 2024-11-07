@@ -51,6 +51,8 @@ Route::middleware([VerifyMiddleware::class])->group(function (){
 
         Route::get('/edit-suspect/{id}', [EditSuspectController::class, 'show'])->name('edit-suspect');
         Route::post('/edit-suspect/{id}', [EditSuspectController::class, 'edit'])->name('post.edit-suspect');
+        Route::delete('/delete-suspect/{id}', [SuspectListController::class, 'destroy'])->name('delete-suspect');
+
     });
 
     Route::middleware([DoitruongMiddleware::class])->group(function (){

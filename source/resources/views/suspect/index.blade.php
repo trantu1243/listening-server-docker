@@ -71,7 +71,12 @@
                                 @else
                                 <td>-</td>
                                 @endif
-                                <td>{{ $item->updated_at }}</td>
+                                @php
+                                    $originalTime = $item->updated_at;
+                                    $localTime = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $originalTime, 'UTC')
+                                                    ->setTimezone('Asia/Ho_Chi_Minh');
+                                @endphp
+                                <td>{{ $localTime }}</td>
                                 <td class="project-actions text-right">
                                     <a class="btn btn-primary btn-sm" href="{{ Route('location', ['id' => $item->id]) }}">
                                         <i class="fas fa-map-marker-alt">
@@ -106,4 +111,48 @@
           </div>
     </div>
 </section>
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmDeleteLabel">Xác nhận</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="content-popup">
+            Bạn có chắc chắn muốn xóa không?
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+            <form action="" method="POST" id="deleteForm">
+                @csrf
+                @method('DELETE')
+                <button class="btn btn-danger" id="deleteButton" href="">Xóa</button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div data-base-url="{{ route('delete-suspect', ['id' => 'PLACEHOLDER']) }}" id="urlBasePlaceholder"></div>
+  <script>
+    document.querySelectorAll('.delete-button').forEach(function(element) {
+        element.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            var id = this.getAttribute('data-id');
+            var name = this.getAttribute('data-name');
+            var baseUrl = document.getElementById('urlBasePlaceholder').getAttribute('data-base-url');
+            var actionUrl = baseUrl.replace('PLACEHOLDER', id);
+
+            document.getElementById('deleteForm').setAttribute('action', actionUrl);
+            document.querySelector('#content-popup').textContent = `Bạn có chắc chắn muốn xóa ${name} không?`;
+
+            var confirmDeleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'), {});
+            confirmDeleteModal.show();
+        });
+    });
+</script>
+
 @endsection
